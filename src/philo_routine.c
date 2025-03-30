@@ -6,7 +6,7 @@
 /*   By: nrey <nrey@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/30 01:37:45 by nrey              #+#    #+#             */
-/*   Updated: 2025/03/30 15:02:07 by nrey             ###   ########.fr       */
+/*   Updated: 2025/03/30 15:06:37 by nrey             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,12 +50,8 @@ void    *philo_routine(void *arg)
 	if (philo->table->nphilo == 1)
 	{
 		print_state(philo, "has taken a fork");
-		precise_usleep(philo->table->timetodie, philo->table);
-		print_state(philo, "died");
-		pthread_mutex_lock(&philo->table->dead_mutex);
-		philo->table->is_dead = 1;
-		pthread_mutex_unlock(&philo->table->dead_mutex);
-		return NULL;
+        precise_usleep(philo->table->timetodie + 5, philo->table);
+        return NULL;
 	}
     if (philo->id % 2 == 0)
         precise_usleep(philo->table->timetoeat / 10, philo->table);
