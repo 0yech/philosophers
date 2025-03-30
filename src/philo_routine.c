@@ -6,7 +6,7 @@
 /*   By: nrey <nrey@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/30 01:37:45 by nrey              #+#    #+#             */
-/*   Updated: 2025/03/30 15:06:37 by nrey             ###   ########.fr       */
+/*   Updated: 2025/03/30 15:24:03 by nrey             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,27 +17,52 @@ int    philo_eats(t_philo *philo)
     if (philo->id % 2 == 0)
     {
         pthread_mutex_lock(philo->left_fork);
+        if (is_dead(philo->table))
+            return (pthread_mutex_unlock(philo->left_fork), 0);
         print_state(philo, "has taken a fork");
+
         pthread_mutex_lock(philo->right_fork);
+        if (is_dead(philo->table))
+        {
+            pthread_mutex_unlock(philo->left_fork);
+            pthread_mutex_unlock(philo->right_fork);
+            return (0);
+        }
         print_state(philo, "has taken a fork");
     }
     else
     {
         pthread_mutex_lock(philo->right_fork);
+        if (is_dead(philo->table))
+            return (pthread_mutex_unlock(philo->right_fork), 0);
         print_state(philo, "has taken a fork");
+
         pthread_mutex_lock(philo->left_fork);
+        if (is_dead(philo->table))
+        {
+            pthread_mutex_unlock(philo->right_fork);
+            pthread_mutex_unlock(philo->left_fork);
+            return (0);
+        }
         print_state(philo, "has taken a fork");
     }
+
     pthread_mutex_lock(&philo->meal_mutex);
     philo->lastmeal = get_ms_time(philo->table);
     pthread_mutex_unlock(&philo->meal_mutex);
+
+    if (is_dead(philo->table))
+    {
+        pthread_mutex_unlock(philo->right_fork);
+        pthread_mutex_unlock(philo->left_fork);
+        return (0);
+    }
+
     print_state(philo, "is eating");
     precise_usleep(philo->table->timetoeat, philo->table);
     pthread_mutex_unlock(philo->right_fork);
     pthread_mutex_unlock(philo->left_fork);
-    if (philo->table->ntimemusteat != -1)
-        if (philo->mealcount >= philo->table->ntimemusteat)
-            return (0);
+
     return (1);
 }
 
@@ -59,6 +84,8 @@ void    *philo_routine(void *arg)
     {
         print_state(philo, "is thinking");
         if (!philo_eats(philo))
+            break ;
+        if (is_dead(philo->table))
             break ;
         pthread_mutex_lock(&philo->meal_mutex);
         philo->mealcount++;
