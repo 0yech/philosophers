@@ -6,11 +6,64 @@
 /*   By: nrey <nrey@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/23 07:57:59 by nrey              #+#    #+#             */
-/*   Updated: 2025/02/23 09:09:37 by nrey             ###   ########.fr       */
+/*   Updated: 2025/03/30 14:47:10 by nrey             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
+
+void	init_lastmeal(t_table *table)
+{
+	long	i;
+	t_philo	*tmp;
+	long	start;
+
+	start = get_ms_time(table);
+	i = 0;
+	tmp = table->philos;
+	while (i < table->nphilo)
+	{
+		tmp->mealcount = 0;
+		pthread_mutex_lock(&tmp->meal_mutex);
+		tmp->lastmeal = start;
+		pthread_mutex_unlock(&tmp->meal_mutex);
+		tmp = tmp->next;
+		i++;
+	}
+}
+
+int		init_meal_mutex(t_philo *head, long nphilo)
+{
+	long	i;
+	t_philo	*tmp;
+
+	i = 0;
+	tmp = head;
+	while (i < nphilo)
+	{
+		if (pthread_mutex_init(&tmp->meal_mutex, NULL) != 0)
+			return (1);
+		tmp->lastmeal = get_ms_time(head->table);
+		tmp = tmp->next;
+		i++;
+	}
+	return (0);
+}
+
+void	assign_table(t_philo *head, t_table *table)
+{
+	t_philo *cpy;
+	int		i;
+
+	i = 0;
+	cpy = head;
+	while (i < table->nphilo)
+	{
+		cpy->table = table;
+		i++;
+		cpy = cpy->next;
+	}
+}
 
 int	fill_philo(long nphilo, pthread_mutex_t *forks, t_philo **head,
 	t_philo **prev)
@@ -60,5 +113,8 @@ t_philo	*init_philo(t_table *table)
 		return (free(table->forks), NULL);
 	prev->next = head;
 	head->prev = prev;
+	assign_table(head, table);
+	if (init_meal_mutex(head, table->nphilo) != 0)
+		return (free_philo(head, table->nphilo, table->forks), NULL);
 	return (head);
 }

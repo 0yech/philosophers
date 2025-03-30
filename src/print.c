@@ -1,33 +1,20 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   free_philo.c                                       :+:      :+:    :+:   */
+/*   print.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nrey <nrey@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/02/23 09:04:58 by nrey              #+#    #+#             */
-/*   Updated: 2025/02/23 09:16:27 by nrey             ###   ########.fr       */
+/*   Created: 2025/03/28 20:26:43 by nrey              #+#    #+#             */
+/*   Updated: 2025/03/30 03:43:19 by nrey             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
 
-void	free_philo(t_philo *head, int nphilo, pthread_mutex_t *forks)
+void    print_state(t_philo *philo, char *state)
 {
-	t_philo	*tmp;
-	t_philo	*next;
-	int		i;
-
-	i = 0;
-	if (!head)
-		return ;
-	tmp = head;
-	while (i < nphilo)
-	{
-		next = tmp->next;
-		free(tmp);
-		tmp = next;
-		i++;
-	}
-	free(forks);
+    pthread_mutex_lock(&philo->table->write_mutex);
+    printf("%ld %d %s\n", get_ms_time(philo->table), philo->id, state);
+    pthread_mutex_unlock(&philo->table->write_mutex);
 }

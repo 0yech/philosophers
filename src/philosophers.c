@@ -6,30 +6,59 @@
 /*   By: nrey <nrey@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 05:31:40 by nrey              #+#    #+#             */
-/*   Updated: 2025/02/23 09:12:04 by nrey             ###   ########.fr       */
+/*   Updated: 2025/03/30 04:06:42 by nrey             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
 
+void	print_philos(t_philo *philos, t_table table)
+{
+	t_philo *cpy;
+	int i;
+
+	i = 0;
+	cpy = philos;
+	while (i < table.nphilo)
+	{
+		printf("id : %d\n", cpy->id);
+		printf("lastmeal : %ld\n", cpy->lastmeal);
+		printf("left fork : %p\n", cpy->left_fork);
+		printf("right fork : %p\n", cpy->right_fork);
+		printf("\n");
+		cpy = cpy->next;
+		i++;
+	}
+	printf("TABLE INFO\n");
+	printf("Numbers of philo : %ld\n", table.nphilo);
+	printf("Time to die : %ld\n", table.timetodie);
+	printf("Time to eat : %ld\n", table.timetoeat);
+	printf("Time to sleep : %ld\n", table.timetosleep);
+	printf("Num times to eat : %ld\n", table.ntimemusteat);
+}
+
 int	main(int argc, char **argv)
 {
 	t_table		table;
-	t_philo		*philos;
 
 	if (init_table(argc, argv, &table) == 1)
 		return (1);
-	philos = init_philo(&table);
-	printf("Numbers of philo : %ld\n", table.nphilo);
-	printf("Time To Die : %ld\n", table.timetodie);
-	printf("Time To Eat : %ld\n", table.timetoeat);
-	printf("Time To Sleep : %ld\n", table.timetosleep);
-	printf("Numbers of times to eat : %ld\n", table.ntimemusteat);
-	printf("philo n%d's left fork ptr : %p\n", philos->id, philos->left_fork);
-	printf("philo n%d's right fork ptr : %p\n", philos->id, philos->right_fork);
-	printf("\n");
-	printf("philo n%d's right fork ptr : %p\n", philos->prev->id, philos->prev->right_fork);
-	printf("philo n%d's left fork ptr : %p\n", philos->next->id, philos->next->left_fork);
-	free_philo(philos, table.nphilo, table.forks);
+	table.philos = init_philo(&table);
+	if (!table.philos)
+		return (1);
+	if (pthread_mutex_init(&table.write_mutex, NULL) != 0)
+		return (free_philo(table.philos, table.nphilo, table.forks), 1);
+	//print_philos(table.philos, table);
+	init_lastmeal(&table);
+	table.is_dead = 0;
+	pthread_mutex_init(&table.dead_mutex, NULL);
+	if (create_threads(&table) != 0)
+		return (free_philo(table.philos, table.nphilo, table.forks), 1);
+	monitor(&table);
+	join_threads(&table);
+	free_philo(table.philos, table.nphilo, table.forks);
+	pthread_mutex_destroy(&table.dead_mutex);
+	pthread_mutex_destroy(&table.write_mutex);
+	free(table.threads);
 	return (0);
 }

@@ -1,6 +1,6 @@
-NAME		=	philosophers
+NAME		=	philo
 CC			=	cc
-CFLAGS		=	-Wall -Wextra -Werror -pthread
+CFLAGS		=	-Wall -Wextra -Werror -pthread -g -fsanitize=thread
 RM			=	rm
 RMFLAGS		=	-f
 
@@ -9,6 +9,11 @@ CFILES		=	$(SRCDIR)/philosophers.c \
 				$(SRCDIR)/init_table.c \
 				$(SRCDIR)/init_philo.c \
 				$(SRCDIR)/free_philo.c \
+				$(SRCDIR)/utils.c \
+				$(SRCDIR)/philo_routine.c \
+				$(SRCDIR)/threads.c \
+				$(SRCDIR)/monitoring.c \
+				$(SRCDIR)/print.c
 					
 OBJS		=	$(CFILES:.c=.o)
 

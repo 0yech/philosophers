@@ -6,7 +6,7 @@
 /*   By: nrey <nrey@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 05:42:43 by nrey              #+#    #+#             */
-/*   Updated: 2025/02/23 08:39:34 by nrey             ###   ########.fr       */
+/*   Updated: 2025/03/30 04:07:11 by nrey             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,5 +81,7 @@ int	init_table(int argc, char **argv, t_table *table)
 		table->ntimemusteat = ft_atol(argv[5]);
 	else
 		table->ntimemusteat = -1;
+	table->start = get_current_time();
+	pthread_mutex_init(&table->write_mutex, NULL);
 	return (0);
 }
