@@ -6,7 +6,7 @@
 /*   By: nrey <nrey@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/30 01:57:32 by nrey              #+#    #+#             */
-/*   Updated: 2025/03/30 03:09:34 by nrey             ###   ########.fr       */
+/*   Updated: 2025/04/01 21:19:19 by nrey             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ int	join_threads(t_table *table)
 	return (0);
 }
 
-int create_threads(t_table *table)
+int	create_threads(t_table *table)
 {
 	long	i;
 	t_philo	*tmp;
@@ -39,7 +39,7 @@ int create_threads(t_table *table)
 	while (i < table->nphilo)
 	{
 		if (pthread_create(&table->threads[i], NULL,
-			philo_routine, (void *)tmp) != 0)
+				philo_routine, (void *)tmp) != 0)
 			return (1);
 		tmp = tmp->next;
 		i++;

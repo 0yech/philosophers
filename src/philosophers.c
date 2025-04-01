@@ -6,7 +6,7 @@
 /*   By: nrey <nrey@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 05:31:40 by nrey              #+#    #+#             */
-/*   Updated: 2025/03/30 15:38:08 by nrey             ###   ########.fr       */
+/*   Updated: 2025/04/01 21:21:00 by nrey             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,8 @@
 
 void	print_philos(t_philo *philos, t_table table)
 {
-	t_philo *cpy;
-	int i;
+	t_philo	*cpy;
+	int		i;
 
 	i = 0;
 	cpy = philos;
@@ -48,7 +48,6 @@ int	main(int argc, char **argv)
 		return (1);
 	if (pthread_mutex_init(&table.write_mutex, NULL) != 0)
 		return (free_philo(table.philos, table.nphilo, table.forks), 1);
-	//print_philos(table.philos, table);
 	init_lastmeal(&table);
 	table.is_dead = 0;
 	pthread_mutex_init(&table.dead_mutex, NULL);

@@ -6,7 +6,7 @@
 /*   By: nrey <nrey@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/23 07:57:59 by nrey              #+#    #+#             */
-/*   Updated: 2025/03/30 14:47:10 by nrey             ###   ########.fr       */
+/*   Updated: 2025/04/01 21:25:29 by nrey             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ void	init_lastmeal(t_table *table)
 	}
 }
 
-int		init_meal_mutex(t_philo *head, long nphilo)
+int	init_meal_mutex(t_philo *head, long nphilo)
 {
 	long	i;
 	t_philo	*tmp;
@@ -52,7 +52,7 @@ int		init_meal_mutex(t_philo *head, long nphilo)
 
 void	assign_table(t_philo *head, t_table *table)
 {
-	t_philo *cpy;
+	t_philo	*cpy;
 	int		i;
 
 	i = 0;

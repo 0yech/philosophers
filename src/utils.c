@@ -12,7 +12,15 @@
 
 #include "philosophers.h"
 
-long    get_current_time(void)
+void	can_eat(t_philo *philo)
+{
+	print_state(philo, "is eating");
+	precise_usleep(philo->table->timetoeat, philo->table);
+	pthread_mutex_unlock(philo->right_fork);
+	pthread_mutex_unlock(philo->left_fork);
+}
+
+long	get_current_time(void)
 {
 	struct timeval	tv;
 
@@ -25,7 +33,7 @@ long	get_ms_time(t_table *table)
 	return ((get_current_time() - table->start));
 }
 
-void    precise_usleep(long time_ms, t_table *table)
+void	precise_usleep(long time_ms, t_table *table)
 {
 	long	start;
 

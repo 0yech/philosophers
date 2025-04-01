@@ -6,15 +6,18 @@
 /*   By: nrey <nrey@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 05:31:16 by nrey              #+#    #+#             */
-/*   Updated: 2025/03/30 14:46:45 by nrey             ###   ########.fr       */
+/*   Updated: 2025/04/01 21:27:07 by nrey             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <sys/time.h>
-#include <unistd.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <pthread.h>
+#ifndef PHILOSOPHERS_H
+# define PHILOSOPHERS_H
+
+# include <sys/time.h>
+# include <unistd.h>
+# include <stdio.h>
+# include <stdlib.h>
+# include <pthread.h>
 
 typedef struct s_philo
 {
@@ -52,15 +55,18 @@ void	init_lastmeal(t_table *table);
 
 void	free_philo(t_philo *head, int nphilo, pthread_mutex_t *forks);
 
-long    get_ms_time(t_table *table);
-long    get_current_time(void);
+long	get_ms_time(t_table *table);
+long	get_current_time(void);
+void	can_eat(t_philo *philo);
 
-void    print_state(t_philo *philo, char *state);
-void    precise_usleep(long time_ms, t_table *table);
+void	print_state(t_philo *philo, char *state);
+void	precise_usleep(long time_ms, t_table *table);
 
-void    *philo_routine(void *arg);
+void	*philo_routine(void *arg);
 int		join_threads(t_table *table);
 int		create_threads(t_table *table);
 
-int     is_dead(t_table *table);
+int		is_dead(t_table *table);
 void	monitor(t_table *table);
+
+#endif
