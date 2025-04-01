@@ -6,7 +6,7 @@
 /*   By: nrey <nrey@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/30 01:37:45 by nrey              #+#    #+#             */
-/*   Updated: 2025/03/30 15:24:03 by nrey             ###   ########.fr       */
+/*   Updated: 2025/04/01 16:24:23 by nrey             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,8 @@
 
 int    philo_eats(t_philo *philo)
 {
+	if (is_dead(philo->table))
+		return (0);
     if (philo->id % 2 == 0)
     {
         pthread_mutex_lock(philo->left_fork);
@@ -46,7 +48,6 @@ int    philo_eats(t_philo *philo)
         }
         print_state(philo, "has taken a fork");
     }
-
     pthread_mutex_lock(&philo->meal_mutex);
     philo->lastmeal = get_ms_time(philo->table);
     pthread_mutex_unlock(&philo->meal_mutex);
@@ -57,7 +58,6 @@ int    philo_eats(t_philo *philo)
         pthread_mutex_unlock(philo->left_fork);
         return (0);
     }
-
     print_state(philo, "is eating");
     precise_usleep(philo->table->timetoeat, philo->table);
     pthread_mutex_unlock(philo->right_fork);
@@ -75,7 +75,7 @@ void    *philo_routine(void *arg)
 	if (philo->table->nphilo == 1)
 	{
 		print_state(philo, "has taken a fork");
-        precise_usleep(philo->table->timetodie + 5, philo->table);
+        precise_usleep(philo->table->timetodie + 2, philo->table);
         return NULL;
 	}
     if (philo->id % 2 == 0)
@@ -97,8 +97,10 @@ void    *philo_routine(void *arg)
             break ;
         print_state(philo, "is sleeping");
         precise_usleep(philo->table->timetosleep, philo->table);
+		if (is_dead(philo->table))
+            break ;
         print_state(philo, "is thinking");
-        precise_usleep(10, philo->table);
+        //precise_usleep(5, philo->table);
     }
     return NULL;
 }
